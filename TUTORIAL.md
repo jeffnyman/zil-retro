@@ -2,8 +2,8 @@
 
 By this point you should have a working ZILF implementation set up on your machine in whatever way you want. As long as you can execute the `zilf.exe` and `zapf.exe` files, you should be fine.
 
-1. Running ZILF Interpreter(#zilf-repl)
-2. Compiling ZIL Source(#zilf-compile)
+1. [Running ZILF Interpreter](#zilf-repl)
+2. [Compiling ZIL Source](#zilf-compile)
 
 This guide will be a work in progress. I will largely be taking you through how to create some of the files that are distributed with ZILF as part of its `sample` directory. Note that you'll probably want to set up whatever convenience mechanism you prefer for compiling files. In my [`projects`](https://github.com/jeffnyman/zil-retro/tree/master/projects) directory, you'll see I have a [Makefile](https://github.com/jeffnyman/zil-retro/blob/master/projects/Makefile).
 
