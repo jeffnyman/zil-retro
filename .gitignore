@@ -1,3 +1,8 @@
+# Generated Files
+
+*.z[3458]
+*.zap
+
 # IDE files
 
 .idea/
