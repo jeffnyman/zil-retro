@@ -20,7 +20,7 @@ Wait, MDL? What happened to ZIL? MDL, originally called "Muddle" and later an ac
 
 MDL ran on the PDP-10. So the first incarnation of Zork ran on this kind of system.
 
-Zork was (ported to Fortran)[https://github.com/historicalsource/zork-fortran] by Bob Supnik in 1980 and then was [ported to C](http://ifarchive.org/if-archive/games/source/dungeon-2.5.6.tar.gz). Note that the latter link is a distribution of the actual soruce. These versions, generally known as "mainframe Zork" (or "Dungeon") circulated among the users groups at DEC. This was a side fork of the Zork history.
+Zork was [ported to Fortran](https://github.com/historicalsource/zork-fortran) by Bob Supnik in 1980 and then was [ported to C](http://ifarchive.org/if-archive/games/source/dungeon-2.5.6.tar.gz). Note that the latter link is a distribution of the actual soruce. These versions, generally known as "mainframe Zork" (or "Dungeon") circulated among the users groups at DEC. This was a side fork of the Zork history.
 
 The group responsible for MDL Zork eventually founded a company called Infocom who decided to use Zork as a way to gain capital. This might providing Zork as a sellable product to the home computer market. However, MDL programs couldn't possibly run on an Apple II, Commodore 64 or a TRS-80.
 
