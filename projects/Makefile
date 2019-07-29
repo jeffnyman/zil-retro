@@ -10,5 +10,5 @@ play:
 	open $(call args, "template").z3
 
 clean:
-	rm -f *.z3
+	rm -f *.z3 *.z4 *.z5 *.z6 *.z8
 	rm -f *.zap

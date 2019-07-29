@@ -171,3 +171,42 @@ Here `CRLF` prints an end-of-line sequence, which is a carriage return (CR) or l
 So let's take stock of what we have. We have a routine and, within that routine, we have two statements that are expressions. One prints a message and another prints a carriage return. When this program is compiled to z-code and run in an interpreter, it will print the message "Testing ZILF" followed by a line break, and then quit.
 
 One thing I should note is that, according to its own documentation, ZILF is *case-insensitive* by default. This means forms and atoms can be entered with any capitalization. Apparently if you wanted to run ZILF in a case-sensitive mode, you would have to apply the "-s" switch when calling it. However, I have found this to be inaccurate. The case does matter. Try, for example, changing the case of "ROUTINE" to "routine" or "GO" to "go" and you will find that you can't compile.
+
+Now let's add some directives.
+
+Directives control the compilation process and should be placed at what's called the "top level" of your source. This means they should not be inside of a routine or any other expression. Here's what you can do:
+
+```zil
+"Testing ZIL"
+
+<VERSION ZIP>
+
+<ROUTINE GO ()
+  <PRINTI "Testing ZILF">
+  <CRLF>>
+```
+
+I'm using the VERSION form to set the version of the Z-Machine that will be targeted in terms of what my game is compiled for. ZILF defaults to Z-Machine version 3, meaning that ZILF generates ZAPF assembly code for a version 3 game. This is why even without this line in place, my file was compiling to *testing.z3*.
+
+Here "VERSION ZIP" is equivalent to "VERSION 3". You can also use "VERSION EZIP" ("VERSION 4"), "VERSION XZIP" ("VERSION 5"), or "YZIP" ("VERSION 6"). The terms "ZIP", "EZIP", "XZIP" and "YZIP" were terms that Infocom used to differentiate the generations of their Z-Machine. You can also compile to version 8 with the use of "VERSION 8". Note that this version is a non-Infocom variant and thus has no "zip" name associated with it.
+
+You might wonder why any of this matters. The choice of Z-Machine version does impact what ZIP instructions will be allowed in routines. The choice of version also impacts the maximum size of the game (number of objects, amount of code and text, etc.), and the availability of certain features like the ability to undo moves, the ability to provide custom status lines, the ability to provide graphics and sound, and so on.
+
+Let's add another directive:
+
+```zil
+"Testing ZIL"
+
+<VERSION ZIP>
+<CONSTANT RELEASEID 1>
+
+<ROUTINE GO ()
+  <PRINTI "Testing ZILF">
+  <CRLF>>
+```
+
+Here I'm using a form called a `CONSTANT` and an atom called `RELEASEID` to provide a release number for my game. While this is clearly optional since we were able to compile without it, this is mandatory for version 5 and above. To see that in action, don't include that directive and change your VERSION directive to "XZIP". You should get an error when assembling takes place.
+
+Incidentally, you can also use `ZORKID` here instead of `RELEASEID`. "ZORKID" is "what Infocom's games used.
+
+That's probably as far as we need to go with this example. The next part of this tutorial will get more into the construction of a game. Or, at least, the basis for how a game would be started.

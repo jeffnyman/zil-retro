@@ -1,5 +1,8 @@
 "Testing ZIL"
 
+<VERSION ZIP>
+<CONSTANT RELEASEID 1>
+
 <ROUTINE GO ()
   <PRINTI "Testing ZILF">
   <CRLF>>
