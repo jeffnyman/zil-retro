@@ -1,0 +1,26 @@
+"Sample Game"
+
+<VERSION ZIP>
+<CONSTANT RELEASEID 1>
+
+<CONSTANT GAME-BANNER
+"SAMPLE GAME|
+An Interactive ZILF Example">
+
+<ROUTINE GO ()
+  <CRLF> <CRLF>
+  <TELL "Welcome to the Testing ZILF Experience" CR CR>
+  <V-VERSION> <CRLF>
+  <SETG HERE ,STARTROOM>
+  <MOVE ,PLAYER ,HERE>
+  <V-LOOK>
+  <MAIN-LOOP>>
+
+<INSERT-FILE "parser">
+
+"Objects"
+
+<OBJECT STARTROOM
+  (IN ROOMS)
+  (DESC "TESTING LAB")
+  (FLAGS LIGHTBIT)>

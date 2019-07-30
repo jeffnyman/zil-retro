@@ -4,6 +4,7 @@ By this point you should have a working ZILF implementation set up on your machi
 
 1. [Running ZILF Interpreter](#zilf-repl)
 2. [Compiling ZIL Source](#zilf-compile)
+3. [Basic Game Start](#basic-game)
 
 This guide will be a work in progress. I will largely be taking you through how to create some of the files that are distributed with ZILF as part of its `sample` directory. Note that you'll probably want to set up whatever convenience mechanism you prefer for compiling files. In my [`projects`](https://github.com/jeffnyman/zil-retro/tree/master/projects) directory, you'll see I have a [Makefile](https://github.com/jeffnyman/zil-retro/blob/master/projects/Makefile).
 
@@ -210,3 +211,194 @@ Here I'm using a form called a `CONSTANT` and an atom called `RELEASEID` to prov
 Incidentally, you can also use `ZORKID` here instead of `RELEASEID`. "ZORKID" is "what Infocom's games used.
 
 That's probably as far as we need to go with this example. The next part of this tutorial will get more into the construction of a game. Or, at least, the basis for how a game would be started.
+
+<a name ="basic-game"></a>
+## Basic Game Start
+
+Now let's get into some source that starts us on the path to creating a game.
+
+Let's create an entirely new source file; call it **basic.zil** and start off the source with the following:
+
+```zil
+"Basic Game"
+
+<VERSION ZIP>
+<CONSTANT RELEASEID 1>
+```
+
+You should recognize the various elements there if you went through the previous section.
+
+There's a lot that goes into a game and you don't want to recreate all of the basic mechanics yourself, of course. That's why most game systems come with a library that provides those basic mechanics for you. ZILF is no different. A core part of that library is the parer. Let's have our basic game use that parser. Add the following:
+
+```zil
+<INSERT-FILE "parser">
+```
+
+INSERT-FILE is another directive that does pretty much what it sounds like. This essentially includes whatever file you specify in the source file. Here "parser" refers to `parser.zil` which is part of your `library` folder. Note that if the file's extension is omitted, as it is in my example, an extension of ".zil" will be assumed.
+
+This directive is how you bring in library files but this is also how you could break up your own game into multiple source files. Generally you'll have one "main" file that will be the starting point for your game. That main file will have `INSERT-FILE` directives to bring in your other source files.
+
+This is, in fact, how `parser.zil` works. It calls in a bunch of the other files that are part of the library. ZILF's library of code is tailored for writing interactive fiction. As such it implements a parser and a world model. Ostensibly this is very similar to what the Infocom implementors had available to them.
+
+If you were just to compile this, you would get the *"missing 'GO' routine"* we've seen before as well as another error *"undefined global constant: GAME-BANNER"*. So let's get the game banner part fixed first:
+
+```zil
+"Sample Game"
+
+<VERSION ZIP>
+<CONSTANT RELEASEID 1>
+
+<CONSTANT GAME-BANNER
+"SAMPLE GAME|
+An Interactive ZILF Example">
+
+<INSERT-FILE "parser">
+```
+
+I should note that you might see older code that shows this:
+
+```zil
+<CONSTANT GAME-TITLE "SAMPLE GAME">
+<CONSTANT GAME-DESCRIPTION "An Interactive ZILF Example">
+```
+
+That appears to be a previous way of doing things.
+
+We're going to need a GO routine as before. Here's a start on that:
+
+```zil
+"Sample Game"
+
+<VERSION ZIP>
+<CONSTANT RELEASEID 1>
+
+<CONSTANT GAME-BANNER
+"SAMPLE GAME|
+An Interactive ZILF Example">
+
+<ROUTINE GO ()
+  <CRLF> <CRLF>>
+
+<INSERT-FILE "parser">
+```
+
+At this point, this game will compile but the game itself would not actually start up. Or, rather, what would happen is that if you tried the game in your interpreter of choice, the interpreter will likely just quit. There's basically nothing happening in our game at all.
+
+The *Learning ZIL* guide says this:
+
+> When a player boots the game, the first thing the interpreter does (as far as you're concerned) is to call a routine called GO. This routine should include things like the opening text, the title screen graphic, a call to V-VERSION (to print all the copyright and release number info), and a call to V-LOOK (to describe the opening location).
+
+Okay, so let's start with some of that. Let's modify the `GO` routine accordingly:
+
+```zil
+<ROUTINE GO ()
+  <CRLF> <CRLF>
+  <TELL "Welcome to the Testing ZILF Experience" CR CR>
+  <V-VERSION> <CRLF>
+  <V-LOOK>>
+```
+
+This will compile and the game will start up in the interpreter but it likely won't look right. For example:
+
+```
+Welcome to the Testing ZILF Experience
+
+SAMPLE GAME
+An Interactive ZILF Example
+Release 1 / Serial number 190727 / ZILF 0.8 lib J4
+
+s   cpzsp cg
+```
+
+And that's it. The interpreter will stop.
+
+Let's turn to *Learning ZIL* again:
+
+> The last thing that GO should do is call the routine called MAIN-LOOP. MAINLOOP is sort of the king of ZIL routines; other than GO, every routine in the game is called by MAIN-LOOP, or by a routine that is called by MAIN-LOOP, or by a routine that is called by a routine that is called by MAIN-LOOP, etc. MAIN-LOOP is basically a giant REPEAT which loops once for each turn of the game.
+
+So let's add that:
+
+```zil
+<ROUTINE GO ()
+  <CRLF> <CRLF>
+  <TELL "Welcome to the Testing ZILF Experience" CR CR>
+  <V-VERSION> <CRLF>
+  <V-LOOK>
+  <MAIN-LOOP>>
+```
+
+With that you have a command parser in your game in that you can actually type things in to it. But you still have those odd letters showing up.
+
+The problem is that there's nowhere for the player to be! That text is being generated by `V-LOOK`. So let's create a generic room. This will be done after the insertion of the parser:
+
+```zil
+...
+<INSERT-FILE "parser">
+
+"Objects"
+
+<OBJECT STARTROOM>
+```
+
+Objects are data structures that are usually used to represent physical objects in the simulated world of the game.
+
+However, just because we've defined this object, that doesn't mean much. The player actually isn't in this location. We have to do a few things in our `GO` routine:
+
+```zil
+<ROUTINE GO ()
+  <CRLF> <CRLF>
+  <TELL "Welcome to the Testing ZILF Experience" CR CR>
+  <V-VERSION> <CRLF>
+  <SETG HERE ,STARTROOM>
+  <MOVE ,PLAYER ,HERE>
+  <V-LOOK>
+  <MAIN-LOOP>>
+```
+
+`HERE` is a global variable that is always set to the current location of the player. So what we do is use the `SETG` (for setting a global variable) to change the value of `HERE` to that of our `STARTROOM` object. Each object has a location (`LOC`). You can change the `LOC` of an object using the `MOVE` form. Here we move the built-in object `PLAYER` to `HERE` which we established was the `STARTROOM`.
+
+Notice those commas. When writing ZIL code, all global variables, room names and object names must be preceded by a comma. As you'll learn later, this is distinct from local variables which must be preceded by a period.
+
+So that's good, we're not getting any weird letters any more. But we're also not really getting much of anything.
+
+Each object has a printable name. Right now we haven't given our `STARTROOM` object such a printable name. Let's change that:
+
+```zil
+<OBJECT STARTROOM
+  (DESC "TESTING LAB")>
+```
+
+So now the player can actually see what location they are in. However, this is actually a dark room. Trying out some commands shows you that right away:
+
+```
+> i
+It's too dark to see what you're carrying.
+
+> look
+It is pitch black. You can't see a thing.
+```
+
+Let's change that situation:
+
+```zil
+<OBJECT STARTROOM
+  (DESC "TESTING LAB")
+  (FLAGS LIGHTBIT)>
+```
+
+Objects have flags that can be set on them. In this case, I'm using `LIGHTBIT` which means that the object is "lit" or is "providing light."
+
+Now you'll find that you can actually see in the location. Granted, we haven't put in much to see but at least the concept is working correctly.
+
+This brings up something else, however. You generally want to specify an object's location, which is given as the name of a parent object. But what does that mean for `STARTROOM`? Let's add one more thing to our object:
+
+```zil
+<OBJECT STARTROOM
+  (IN ROOMS)
+  (DESC "TESTING LAB")
+  (FLAGS LIGHTBIT)>
+```
+
+The `IN` form defines the object's location. `LOC` can be used instead of `IN` if you prefer, the former being what Infocom used.
+
+This is now basically a working game, albeit with nothing at all to do. But what you see here is a generic structure that would provide you the starting point for your own games.
