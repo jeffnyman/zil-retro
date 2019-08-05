@@ -51,7 +51,7 @@ This returns TRUE if the sum of 4 and 1 is greater-than or equal to 10 and retur
 
 ```
 <SETG COUNTER 10>
-<SETG COUNT <>* ,COUNTER <RANDOM 4>>>
+<SETG COUNT <* ,COUNTER <RANDOM 4>>>
 ```
 
 First we set a global variable of `COUNTER` to 10. Then we set another global variable (`COUNT`) to the product of the value of the global variable `COUNTER` and some random number from 1 to 4 using something called `RANDOM`.
@@ -129,6 +129,8 @@ Incidentally, the basic parts of a routine look like this:
 With all that being said, let's try and compile.
 
 You'll get an error: *"ROUTINE requires 3 or more args"*. As it turns out, this error message is not correct, at least so far as I can tell. If you look at the schematic of a routine provided above, this error would imply I need at least three arguments in the argument list provided with GO. As it turns out, however, you don't actually need to put three arguments in place. But you *do* need to have something to execute in the routine.
+
+(As a note: the above is incorrect on my part and the error is correct. I will revisit this in the [Cloak of Darkness](https://github.com/jeffnyman/zil-retro/blob/master/CLOAK.md). I leave it here as an example of how it's easy to to get some details wrong when you are working in the context of a Lisp-like language and are unfamiliar with the constructs.)
 
 Let's modify our example:
 
