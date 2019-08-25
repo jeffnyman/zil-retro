@@ -244,3 +244,80 @@ According to *Learning ZIL*:
 > If a room’s description never changes, it can have an LDESC property, a string which is the room’s unchanging description.
 
 You might wonder how you would handle situations where a description might change. In that case, you would have to create an action routine for the room. We'll get to that concept a bit later in the Cloak example.
+
+## More Rooms
+
+Let's add a few other rooms just to flesh out the game world a bit.
+
+```zil
+<ROOM BAR
+  (IN ROOMS)
+  (DESC "Foyer Bar")
+  (LDESC "The bar, much rougher than you'd have guessed after the opulence of the foyer to the north, is completely empty.")
+>
+
+<ROOM CLOAKROOM
+  (IN ROOMS)
+  (DESC "Cloakroom")
+  (LDESC "The walls of this small room were clearly once lined with hooks, though now only one remains. The exit is a door to the east.")
+  (FLAGS LIGHTBIT)
+>
+```
+
+You might notice that `BAR` does not contain a flag for the room to be lit. That's intentional.
+
+## Connections Between Rooms
+
+While these rooms now exist, the player can't actually go to them. For that we need to define exits on the rooms. Change the `BAR` and `CLOAKROOM` objects as such:
+
+```zil
+<ROOM BAR
+  (IN ROOMS)
+  (DESC "Foyer Bar")
+  (LDESC "The bar, much rougher than you'd have guessed after the opulence of the foyer to the north, is completely empty.")
+  (NORTH TO FOYER)
+>
+
+<ROOM CLOAKROOM
+  (IN ROOMS)
+  (DESC "Cloakroom")
+  (LDESC "The walls of this small room were clearly once lined with hooks, though now only one remains. The exit is a door to the east.")
+  (EAST TO FOYER)
+  (FLAGS LIGHTBIT)
+>
+```
+
+What this is doing is creating a type of `UEXIT`, which stands for "unconditional exit." What this means is that if the player is in a room with such an exit and goes in the direction provided as an argument to the exit, the player will unconditionally go to the room listed as part of the exit. So here if the player is in the "Bar" and does north, they will go to the "Foyer." This will happen all the time.
+
+However, we need a way to get out of our starting room. Easy enough:
+
+```zil
+<ROOM FOYER
+  (IN ROOMS)
+  (DESC "Foyer of the Opera House")
+  (LDESC "You are standing in a spacious hall, splendidly decorated in red and gold, with glittering chandeliers overhead. The entrance from the street is to the north, and there are doorways south and west.")
+  (SOUTH TO BAR)
+  (WEST TO CLOAKROOM)
+  (FLAGS LIGHTBIT)
+>
+```
+
+This is basically how you build a series of connections between locations. There are other types of exits, not all of which I'll cover in the Cloak example. But let's consider one other one. Add the following to the `FOYER` object:
+
+```zil
+<ROOM FOYER
+  (IN ROOMS)
+  (DESC "Foyer of the Opera House")
+  (LDESC "You are standing in a spacious hall, splendidly decorated in red and gold, with glittering chandeliers overhead. The entrance from the street is to the north, and there are doorways south and west.")
+  (SOUTH TO BAR)
+  (WEST TO CLOAKROOM)
+  (NORTH SORRY "You've only just arrived, and besides, the weather outside seems to be getting worse.")
+  (FLAGS LIGHTBIT)
+>
+```
+
+Here we've added an exit (`NORTH`) but we have an argument called `SORRY`. What does that mean? *Learning ZIL* gives us this info:
+
+> The NEXIT (for non-exit) is simply a direction in which you can never go, but for which you want something more interesting than the default "You can’t go that way." response. The game will recognize it as an NEXIT because of the use of "SORRY."
+
+Compiling this example will let you move between rooms.
