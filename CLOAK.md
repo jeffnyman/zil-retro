@@ -400,3 +400,37 @@ We have a few new flags here. The `CONTBIT` means the object is a container and 
 > Any object with the SURFACEBIT should also have the CONTBIT (since you can put things on the surface) and the OPENBIT (since you can't close a countertop as you can a box).
 
 Note that this actually doesn't make a lot of sense as described. In fact, it seems entirely backwards. The `OPENBIT` referred to indicates that an object is a door or container and is open. But that doesn't apply to a surface.
+
+## Action Routines
+
+Rooms and objects can have action routines defined on. We'll do this for a room soon. But for now let's start with a simple example by placing an action routine on an object. Change your cloak object so it looks like this:
+
+```zil
+<OBJECT CLOAK
+  (IN PLAYER)
+  (DESC "cloak")
+  (SYNONYM CLOAK)
+  (ADJECTIVE DARK)
+  (FLAGS TAKEBIT WEARBIT WORNBIT)
+  (ACTION CLOAK-R)
+>
+```
+
+The `ACTION` property identifies `CLOAK-R` as the action routine which tries to handle inputs relating to the cloak. Now let's create this routine. I'm going to give you the whole thing here and then I'll explain it. Add the following to your file:
+
+```zil
+<ROUTINE CLOAK-R ()
+  <COND (<VERB? EXAMINE> <TELL "The cloak is unnaturally dark." CR>)>
+>
+```
+
+This routine demonstrates one of the simplest and commonest types of predicates. `<VERB? EXAMIME>` is true if EXAMINE is the PRSA identified by the parser. If that condition is true, then the following code occurs, which is to simply use `TELL` to print a string. This works, however, because of the use of `COND` which is short for "conditional." You can think of this as an if-then type of construct.
+
+The basic form of a `COND` is this:
+
+```
+<COND (<if true >
+       <then do this >)>
+```
+
+The "if true" part is referred to as the predicate. A predicate is basically anything in ZIL whose value can be true or false. So you can think of the predicate as asking a particular question that needs to be reduced to an answer of "yes" (true) or "no" (false).

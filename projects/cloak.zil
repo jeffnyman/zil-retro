@@ -54,6 +54,7 @@ Tutorial version by Jeff Nyman.">
   (SYNONYM CLOAK)
   (ADJECTIVE DARK)
   (FLAGS TAKEBIT WEARBIT WORNBIT)
+  (ACTION CLOAK-R)
 >
 
 <OBJECT HOOK
@@ -63,4 +64,8 @@ Tutorial version by Jeff Nyman.">
   (SYNONYM HOOK PEG)
   (ADJECTIVE SMALL BRASS)
   (FLAGS CONTBIT SURFACEBIT)
+>
+
+<ROUTINE CLOAK-R ()
+  <COND (<VERB? EXAMINE> <TELL "The cloak is unnaturally dark." CR>)>
 >
