@@ -377,3 +377,26 @@ If you compile the game with these changes and place and type "i" or "inventory"
 You are carrying:
    a cloak (worn)
 ```
+
+To make sure we got this down, let's add another simple object:
+
+```zil
+<OBJECT HOOK
+  (IN CLOAKROOM)
+  (DESC "small brass hook")
+  (FDESC "A small brass hook is on the wall.")
+  (SYNONYM HOOK PEG)
+  (ADJECTIVE SMALL BRASS)
+  (FLAGS CONTBIT SURFACEBIT)
+>
+```
+
+This is similar to our cloak object in many ways but let's call out the differences.
+
+The `FDESC` property is a string which is used to describe the object until the player picks it up for the first time. In other words, it describes the object in its original or first state. In this case, however, the hook can't be taken. (There's no `TAKEBIT` flag.) So why would this extra description matter? What this does is provide the "first description" every time the player enters the room. It's a way to keep calling attention to the hook.
+
+We have a few new flags here. The `CONTBIT` means the object is a container and thus things can be put inside it. As a container it can also potentially be opened and closed. The `SURFACEBIT` means the object acts as a surface. This means objects can be placed on top of it. *Learning ZIL* indicates this:
+
+> Any object with the SURFACEBIT should also have the CONTBIT (since you can put things on the surface) and the OPENBIT (since you can't close a countertop as you can a box).
+
+Note that this actually doesn't make a lot of sense as described. In fact, it seems entirely backwards. The `OPENBIT` referred to indicates that an object is a door or container and is open. But that doesn't apply to a surface.

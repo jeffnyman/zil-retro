@@ -55,3 +55,12 @@ Tutorial version by Jeff Nyman.">
   (ADJECTIVE DARK)
   (FLAGS TAKEBIT WEARBIT WORNBIT)
 >
+
+<OBJECT HOOK
+  (IN CLOAKROOM)
+  (DESC "small brass hook")
+  (FDESC "A small brass hook is on the wall.")
+  (SYNONYM HOOK PEG)
+  (ADJECTIVE SMALL BRASS)
+  (FLAGS CONTBIT SURFACEBIT)
+>
