@@ -1,5 +1,8 @@
 # Generated Files
 
+bin/
+zillib/
+sample/
 *.z[34568]
 *.zap
 

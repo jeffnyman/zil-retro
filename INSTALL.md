@@ -1,42 +1,33 @@
 # Getting ZILF
 
-In order to work with ZIL in a modern context, you'll likely need ZILF. This is an amazing piece of work  but it's not a very friendly tool in some cases and getting it setup is potentially a bit problematic if you're not used to setting up programming tools.
-
-If you don't want to use the version of ZILF in this repository, I'll cover how you can get your own.
+In order to work with ZIL in a modern context, you'll likely need ZILF. This is an amazing piece of work but you have to know how to get it working for you.
 
 You can check the [current downloads of ZILF](https://bitbucket.org/jmcgrew/zilf/downloads/). These are essentially how ZILF is currently distributed. Grab the latest version there.
 
-When you extract the contents, of importance there is the `bin`</code>` directory, which contains the ZILF and ZAPF executables.
+I should note that there is a major change point in how ZILF is distributed starting with version 0.9. Prior to that, ZILF was built on [.NET Standard](https://blogs.msdn.microsoft.com/dotnet/2016/09/26/introducing-net-standard/) which meant you needed Mono to run it on non-Windows systems. Starting with version 0.9, however, the project has been written to work on [.NET Core](https://docs.microsoft.com/en-us/dotnet/core/index). This means you no longer need Mono on Linux and Mac OS.
 
-The `doc`, `library` and `sample` directories are useful but they not be as up to date. To handle that last issues, at that same link as above, click the "Download repository" link. As opposed to the *last bundled up version*, this link will give you a zipped up file of all the *current* contents.
+I used to distribute the 0.8 version of ZILF as part of this project. That, however, is no longer necessary nor tenable. I recommend [getting ZILF for your operating system of choice](https://bitbucket.org/jmcgrew/zilf/downloads/).
 
-Once you extract the contents, you'll see a `zillib` directory that you should probably use for the library directory. There is a `sample` directory that contains more up to date samples than the distribution. The library contains the ZILF interactive fiction library, which eventually you'll need if you want to create games. The samples are just that: sample games for use with the library. The documentation is a bit threadbare but it does, at the very least, give you a good idea of the tools. As far as constructing games, however, they're not that useful.
+When you extract the contents of your distribution, of importance there is the `bin` directory, which contains the ZILF and ZAPF executables.
 
-So here's what I would recommend:
+You'll also see a `zillib` directory that provides a library of functionality for you to use. The library contains the ZILF interactive fiction library, which eventually you'll need if you want to create games. There is also a `sample` directory that contains sample games for use with the library.
 
-1. Use `zilf-0.8` for your project folder.</li>
-2. But delete everything in there except the `bin` directory.
-3. Move the `zillib` directory from the distribution to your project folder and rename it `library`.
-4. Move the `sample` directory from the distribution to your project folder.
-5. Move the `doc` directory from the distribution to you project folder.
-6. After that you can delete the distribution folder.
-
-A bit cumbersome perhaps, but at least now everything is as up to date as it can be. Note that, to my knowledge, there is also no way to really know when there are updates to the library, samples or documentation short of just keeping your eye on the repository. And it won't necessarily be clear if those updates have been bundled into a release.
+If you want to use your version of ZILF directly with this project, you can simply move the directories from the distribution into this project folder.
 
 ## Make Sure ZILF Works
 
-Now let's see if things work. ZILF and ZAPF are both managed applications that are compiled to run on the Microsoft .NET CLR. On Windows this means you can run the executables directly, as long as you have the .NET runtime installed, which you likely do if you have a relatively up to date version of Windows. You have to use Mono on Linux and Mac OS in order to run the executables.
+Now let's see if things work. ZILF and ZAPF are both managed applications that are compiled to run on the Microsoft .NET CLR, but specifically using .NET Core.
 
 Try the following commands wherever you have place the files:
 
 ```
-zilf.exe --help
+zilf --help
 ```
 
 ```
-zapf.exe --help
+zapf --help
 ```
 
-Again, on Mac or Linux, you have to preface those commands with `mono`.
+On Windows, these will be ".exe" files.
 
 If you get some output telling you how you can use the two tools, then they are working on your machine.
