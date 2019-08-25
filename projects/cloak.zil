@@ -77,5 +77,13 @@ Tutorial version by Jeff Nyman.">
       <COND (<FSET? ,CLOAK ,WORNBIT> <FCLEAR ,BAR ,LIGHTBIT>)
       (ELSE <FSET ,BAR ,LIGHTBIT>)
       >)
+
+    (<==? .RARG ,M-BEG>
+      <COND (<AND <NOT <FSET? ,BAR ,LIGHTBIT>>
+        <NOT <GAME-VERB?>>
+        <NOT <VERB? LOOK>>
+        <NOT <AND <VERB? WALK> <==? ,PRSO ,P?NORTH>>>
+        <TELL "You grope around clumsily in the dark. Better be careful." CR>>)
+      >)
   >
 >

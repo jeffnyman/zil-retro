@@ -519,3 +519,123 @@ So the idea here in total is that if the room is being entered and the cloak is 
 Here if the above condition is not set -- meaning that the cloak is not worn -- then the `LIGHTBIT` for the `BAR` will be set. So the key to seeing in the Bar is to not be wearing the cloak.
 
 Incidentally, as you can see, this is why these types of languages are such a pain to work with. This is, arguably, a confusing way to program. So if you feel cognitive friction with this, that's to be expected.
+
+Now let's add another condition:
+
+```zil
+<ROUTINE BAR-R (RARG)
+  <COND
+    (<==? .RARG ,M-ENTER>
+      <COND (<FSET? ,CLOAK ,WORNBIT> <FCLEAR ,BAR ,LIGHTBIT>)
+      (ELSE <FSET ,BAR ,LIGHTBIT>)
+      >)
+
+    (<==? .RARG ,M-BEG>
+      >)
+  >
+>
+```
+
+I'm showing you this in such a piece-meal fashion because I want you to see how the constructs work. So here we have another "is equal" check but what's `M-BEG`. This part can get a little confusing but basically remember that `PERFORM` I mentioned way back at the start? This routine gives any room's action routine an opportunity to execute some logic by calling it with an argument called ... you guessed it! ... `M-BEG`.
+
+Let's add a conditional to this block:
+
+```zil
+<ROUTINE BAR-R (RARG)
+  <COND
+    (<==? .RARG ,M-ENTER>
+      <COND (<FSET? ,CLOAK ,WORNBIT> <FCLEAR ,BAR ,LIGHTBIT>)
+      (ELSE <FSET ,BAR ,LIGHTBIT>)
+      >)
+
+    (<==? .RARG ,M-BEG>
+      <COND
+      >
+      >)
+  >
+>
+```
+
+Again, I'm taking this a bit slow here because this code becomes hideous.
+
+Now let's add a predicate:
+
+```zil
+<ROUTINE BAR-R (RARG)
+  <COND
+    (<==? .RARG ,M-ENTER>
+      <COND (<FSET? ,CLOAK ,WORNBIT> <FCLEAR ,BAR ,LIGHTBIT>)
+      (ELSE <FSET ,BAR ,LIGHTBIT>)
+      >)
+
+    (<==? .RARG ,M-BEG>
+      <COND (<NOT <FSET? ,BAR ,LIGHTBIT>>
+        <TELL "You grope around clumsily in the dark. Better be careful." CR>)
+      >)
+  >
+>
+```
+
+Here we're using a `NOT` to check if the `LIGHTBIT` is not set on the `BAR` object. What this will do is print the the `TELL` text if the player tries to do anything in the dark Bar room. However, this also includes if the player tries to leave the room or even tries to quit the game. So we have to nuance our rule a bit.
+
+```zil
+<ROUTINE BAR-R (RARG)
+  <COND
+    (<==? .RARG ,M-ENTER>
+      <COND (<FSET? ,CLOAK ,WORNBIT> <FCLEAR ,BAR ,LIGHTBIT>)
+      (ELSE <FSET ,BAR ,LIGHTBIT>)
+      >)
+
+    (<==? .RARG ,M-BEG>
+      <COND (<AND <NOT <FSET? ,BAR ,LIGHTBIT>>
+        <NOT <GAME-VERB?>>
+        <TELL "You grope around clumsily in the dark. Better be careful." CR>>)
+      >)
+  >
+>
+```
+
+Of import here is making sure that your brackets are all balanced. What I've done here is add an `AND` to the condition and then also performed a check if the command was not a `GAME-VERB`, which includes commands like "quit."
+
+Even if the player types "look", they are told they grope around in the dark. But looking would not necessarily entail groping around. So let's fix that:
+
+```zil
+<ROUTINE BAR-R (RARG)
+  <COND
+    (<==? .RARG ,M-ENTER>
+      <COND (<FSET? ,CLOAK ,WORNBIT> <FCLEAR ,BAR ,LIGHTBIT>)
+      (ELSE <FSET ,BAR ,LIGHTBIT>)
+      >)
+
+    (<==? .RARG ,M-BEG>
+      <COND (<AND <NOT <FSET? ,BAR ,LIGHTBIT>>
+        <NOT <GAME-VERB?>>
+        <NOT <VERB? LOOK>>
+        <TELL "You grope around clumsily in the dark. Better be careful." CR>>)
+      >)
+  >
+>
+```
+
+Finally let's handle the harder situation of making sure that the player can actually leave the room. For that, we have to check for a specific action in a specific direction:
+
+```zil
+<ROUTINE BAR-R (RARG)
+  <COND
+    (<==? .RARG ,M-ENTER>
+      <COND (<FSET? ,CLOAK ,WORNBIT> <FCLEAR ,BAR ,LIGHTBIT>)
+      (ELSE <FSET ,BAR ,LIGHTBIT>)
+      >)
+
+    (<==? .RARG ,M-BEG>
+      <COND (<AND <NOT <FSET? ,BAR ,LIGHTBIT>>
+        <NOT <GAME-VERB?>>
+        <NOT <VERB? LOOK>>
+        <NOT <AND <VERB? WALK> <==? ,PRSO ,P?NORTH>>>
+        <TELL "You grope around clumsily in the dark. Better be careful." CR>>)
+      >)
+  >
+>
+```
+
+What this does is check if the `VERB` is a `WALK` action and then checks if the `PRSO` (the direct object of that action) is `NORTH`. The `P?` is how you can supply the name of a property.
