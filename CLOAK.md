@@ -321,3 +321,59 @@ Here we've added an exit (`NORTH`) but we have an argument called `SORRY`. What 
 > The NEXIT (for non-exit) is simply a direction in which you can never go, but for which you want something more interesting than the default "You can’t go that way." response. The game will recognize it as an NEXIT because of the use of "SORRY."
 
 Compiling this example will let you move between rooms.
+
+## Adding an Object
+
+Now let's add an object to our game. In fact, we'll add an object that provides a reason for the title of the game. This will be the cloak object. Let's start with this:
+
+```zil
+<OBJECT CLOAK
+  (IN PLAYER)
+  (DESC "cloak")
+>
+```
+
+Pretty simple and very similar to how we defined a room. Here we are saying that the cloak is `IN` the `PLAYER` but we could have made it be `IN` the `FOYER`, as just another example. While a room will always be in the `ROOMS` object, a generic game object can be wherever you want it to start. The `DESC` is similar to that for a room in that it just says how the object will be described to the player.
+
+Let's add a few more things:
+
+```zil
+<OBJECT CLOAK
+  (IN PLAYER)
+  (DESC "cloak")
+  (SYNONYM CLOAK)
+  (ADJECTIVE DARK)
+>
+```
+
+The `SYNONYM` is a list of all the nouns which can be used to refer to the object. Here I only have one but I could add others by including them as a spaced list, as such:
+
+```zil
+(SYNONYM CLOAK GARMENT)
+```
+
+The `ADJECTIVE` is a list of adjectives which can be used to refer to the object. To quote *Learning ZIL*:
+
+> An object, to be referred to, must have at least one synonym; the ADJECTIVE property is optional.
+
+Now let's add some flags to our objects:
+
+```zil
+<OBJECT CLOAK
+  (IN PLAYER)
+  (DESC "cloak")
+  (SYNONYM CLOAK)
+  (ADJECTIVE DARK)
+  (FLAGS TAKEBIT WEARBIT WORNBIT)
+>
+```
+
+The `TAKEBIT` flag means that the cloak can be picked up by the player. In fact, we already set that situation up because the cloak starts `IN` the `PLAYER` which would default to the player carrying it. However, without the `TAKEBIT` flag, the player would not be able to pick up the cloak again if they dropped it. The `WEARBIT` indicates that the cloak can be worn. This only means that the object is wearable, not that it is actually being worn. However, `WORNBIT` means that a wearable object like the cloak is currently being worn.
+
+If you compile the game with these changes and place and type "i" or "inventory", you'll see the following:
+
+```
+> i
+You are carrying:
+   a cloak (worn)
+```

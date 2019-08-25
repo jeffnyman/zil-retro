@@ -47,3 +47,11 @@ Tutorial version by Jeff Nyman.">
   (EAST TO FOYER)
   (FLAGS LIGHTBIT)
 >
+
+<OBJECT CLOAK
+  (IN PLAYER)
+  (DESC "cloak")
+  (SYNONYM CLOAK)
+  (ADJECTIVE DARK)
+  (FLAGS TAKEBIT WEARBIT WORNBIT)
+>
