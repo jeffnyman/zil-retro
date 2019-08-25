@@ -180,7 +180,27 @@ We saw in the tutorial the idea of defining an object that was the location wher
 >
 ```
 
-I showed you something very similar in the tutorial, one difference here being that instead of using `OBJECT`, I'm using `ROOM`. This is a concept provided by the ZILF library. I'm also making sure the room is lit so the player will be able to see in it. In fact, we'll have to do what we did in the initial tutorial by making sure to put the player in that room at the start. So change your `INIT` routine as such:
+I showed you something very similar in the tutorial, one difference here being that instead of using `OBJECT`, I'm using `ROOM`. This is a concept provided by the ZILF library. To quote *Learning ZIL*:
+
+> The first thing in a room definition is the word ROOM followed by the internal name of the room.
+
+I talked about the use of `IN` (or `LOC`) in the tutorial but to once again quote *Learning ZIL*:
+
+> All rooms are located in a special object called the ROOMS object.
+
+The `DESC` is the description which, in contrast to the "internal name" mentioned above, is the "external name" of the room. This is the only name for the room that they player will ever see.
+
+I'm also making sure the room is lit so the player will be able to see in it. Note that you'll read this in *Learning ZIL*:
+
+> ONBIT means that the room is always lit.
+
+So the `ONBIT` there is equivalent to the `LIGHTBIT`. But that's different than what ZIL seems to have been. The definition of `ONBIT` in *Learning ZIL* is:
+
+> ONBIT: In the case of a room, this means that the room is lit. If your game takes place during the day, any outdoor room should have the ONBIT. In the case of an object, this means that the object is providing light. An object with the ONBIT should also have the LIGHTBIT.
+
+The distinction seems to be that `ONBIT` means the object or room is providing light at all times whereas the `LIGHTBIT` means the object can be providing light but it can also be extinguished.
+
+In fact, we'll have to do what we did in the initial tutorial by making sure to put the player in that room at the start. So change your `INIT` routine as such:
 
 ```zil
 <ROUTINE INIT ()
@@ -219,4 +239,8 @@ Our room is still a little boring in that all we have is the description. Let's 
 >
 ```
 
-The `LDESC` atom lets you put in place the unchanging description of a room.
+According to *Learning ZIL*:
+
+> If a room’s description never changes, it can have an LDESC property, a string which is the room’s unchanging description.
+
+You might wonder how you would handle situations where a description might change. In that case, you would have to create an action routine for the room. We'll get to that concept a bit later in the Cloak example.
