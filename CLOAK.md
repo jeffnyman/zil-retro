@@ -168,4 +168,55 @@ This is referring to the `INIT` routine we just created. I just talked about arg
 
 This will now compile. The trick here is that you have to understand the form `ROUTINE` is the name of a function. But isn't `INIT` the name of our function? Yes, but in a Lisp-like language, the keyword to define a function is "ROUTINE" and it takes three arguments. The first of those is the name (in our case, `INIT`), the second of those is the parameter list, and then the third is at least one function call (which for us is `V-VERSION`).
 
-**MORE TO COME**
+## The Starting Room
+
+We saw in the tutorial the idea of defining an object that was the location where the player could begin. Let's put that in place for our game, which starts in a foyer.
+
+```zil
+<ROOM FOYER
+  (IN ROOMS)
+  (DESC "Foyer of the Opera House")
+  (FLAGS LIGHTBIT)
+>
+```
+
+I showed you something very similar in the tutorial, one difference here being that instead of using `OBJECT`, I'm using `ROOM`. This is a concept provided by the ZILF library. I'm also making sure the room is lit so the player will be able to see in it. In fact, we'll have to do what we did in the initial tutorial by making sure to put the player in that room at the start. So change your `INIT` routine as such:
+
+```zil
+<ROUTINE INIT ()
+  <V-VERSION>
+  <SETG HERE ,FOYER>
+  <MOVE ,PLAYER ,HERE>
+  <V-LOOK>
+>
+```
+
+This will place the player in the foyer and perform an initial look action.
+
+If you try this out, you'll find that your output in the game looks a little messy, with everything sort of jumbled together. The game also just dumps you in the foyer without providing any context for the narrative. So let's change the `INIT` routine to look like this:
+
+```zil
+<ROUTINE INIT ()
+  <CRLF> <CRLF>
+  <TELL "Hurrying through the rainswept November night, you're glad to see the bright lights of the Opera House. It's surprising that there aren't more people about but, hey, what do you expect in a cheap demo game...?" CR CR>
+  <V-VERSION> <CRLF>
+  <SETG HERE ,FOYER>
+  <MOVE ,PLAYER ,HERE>
+  <V-LOOK>
+>
+```
+
+The `TELL` atom refers to a kind of routine that's called a macro. This particular macro deals with printing everything the user sees as output. In its simplest use, as in the above example, `TELL` does nothing more than take the string provided as an argument and prints it. The `CR` after the string means "carriage return." But we've already done `CRLF` ("carriage return line feed"). What's the difference? Apparently there isn't one.
+
+Our room is still a little boring in that all we have is the description. Let's provide a longer description to the player. Change the foyer object to look like this:
+
+```zil
+<ROOM FOYER
+  (IN ROOMS)
+  (DESC "Foyer of the Opera House")
+  (LDESC "You are standing in a spacious hall, splendidly decorated in red and gold, with glittering chandeliers overhead. The entrance from the street is to the north, and there are doorways south and west.")
+  (FLAGS LIGHTBIT)
+>
+```
+
+The `LDESC` atom lets you put in place the unchanging description of a room.
