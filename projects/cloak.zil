@@ -38,6 +38,7 @@ Tutorial version by Jeff Nyman.">
   (DESC "Foyer Bar")
   (LDESC "The bar, much rougher than you'd have guessed after the opulence of the foyer to the north, is completely empty.")
   (NORTH TO FOYER)
+  (ACTION BAR-R)
 >
 
 <ROOM CLOAKROOM
@@ -68,4 +69,13 @@ Tutorial version by Jeff Nyman.">
 
 <ROUTINE CLOAK-R ()
   <COND (<VERB? EXAMINE> <TELL "The cloak is unnaturally dark." CR>)>
+>
+
+<ROUTINE BAR-R (RARG)
+  <COND
+    (<==? .RARG ,M-ENTER>
+      <COND (<FSET? ,CLOAK ,WORNBIT> <FCLEAR ,BAR ,LIGHTBIT>)
+      (ELSE <FSET ,BAR ,LIGHTBIT>)
+      >)
+  >
 >

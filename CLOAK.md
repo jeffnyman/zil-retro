@@ -401,7 +401,7 @@ We have a few new flags here. The `CONTBIT` means the object is a container and 
 
 Note that this actually doesn't make a lot of sense as described. In fact, it seems entirely backwards. The `OPENBIT` referred to indicates that an object is a door or container and is open. But that doesn't apply to a surface.
 
-## Action Routines
+## Object Action Routines
 
 Rooms and objects can have action routines defined on. We'll do this for a room soon. But for now let's start with a simple example by placing an action routine on an object. Change your cloak object so it looks like this:
 
@@ -434,3 +434,88 @@ The basic form of a `COND` is this:
 ```
 
 The "if true" part is referred to as the predicate. A predicate is basically anything in ZIL whose value can be true or false. So you can think of the predicate as asking a particular question that needs to be reduced to an answer of "yes" (true) or "no" (false).
+
+## Room Action Routines
+
+Now let's put an action routine on a room. Let's add this to our `BAR` room:
+
+```zil
+<ROOM BAR
+  (IN ROOMS)
+  (DESC "Foyer Bar")
+  (LDESC "The bar, much rougher than you'd have guessed after the opulence of the foyer to the north, is completely empty.")
+  (NORTH TO FOYER)
+  (ACTION BAR-R)
+>
+```
+
+We can start adding our routine for the room:
+
+```zil
+<ROUTINE BAR-R (RARG)
+>
+```
+
+But now let's talk about this routine a bit and how we're going to build it out. First let's consider *Learning ZIL*:
+
+> A room’s action routine is (generally) not used for the purpose of handling the player’s input directly, as with an object’s action routine.
+
+Unlike with the object action routine, we're passing an argument here called `RARG`. That's short for "room argument." Again, we can turn to *Learning ZIL*:
+
+> All room action routines are passed an argument, which tell the routine for what purpose it is being called.
+
+A common use of an action routine for a room would be to handle situations where the room is being entered. What we'll do first is set up a condition.
+
+```zil
+<ROUTINE BAR-R (RARG)
+  <COND
+  >
+>
+```
+
+Now let's add some conditionals.
+
+```zil
+<ROUTINE BAR-R (RARG)
+  <COND
+    (<==? .RARG ,M-ENTER>
+      >)
+  >
+>
+
+```
+
+Here `==?` means "equal to." So what this is testing is if the room argument is something called `M-ENTER`. What's happening here is that `M-ENTER` is sort of built in and is called whenever a room is entered. Now, assuming this is true, let's put in what should happen:
+
+```zil
+<ROUTINE BAR-R (RARG)
+  <COND
+    (<==? .RARG ,M-ENTER>
+      <COND (<FSET? ,CLOAK ,WORNBIT> <FCLEAR ,BAR ,LIGHTBIT>)
+      >)
+  >
+>
+```
+
+
+
+So what have I done here? I've set up a condition using an `FSET` predicate. I'm checking if the `CLOAK` object has its `WORNBIT` set. Remember that this means the cloak is actually being worn. If that's true, I use `FCLEAR` to unset (or clear) the `LIGHTBIT` from `BAR`. To quote *Learning ZIL*:
+
+> A flag can be set using FSET, cleared using FCLEAR, and checked using FSET?
+
+So the idea here in total is that if the room is being entered and the cloak is being worn, then the Bar location is not lit. Not let's set another condition if the above isn't true.
+
+```zil
+<ROUTINE BAR-R (RARG)
+  <COND
+    (<==? .RARG ,M-ENTER>
+      <COND (<FSET? ,CLOAK ,WORNBIT> <FCLEAR ,BAR ,LIGHTBIT>)
+      (ELSE <FSET ,BAR ,LIGHTBIT>)
+      >)
+  >
+>
+```
+
+Here if the above condition is not set -- meaning that the cloak is not worn -- then the `LIGHTBIT` for the `BAR` will be set. So the key to seeing in the Bar is to not be wearing the cloak.
+
+Incidentally, as you can see, this is why these types of languages are such a pain to work with. This is, arguably, a confusing way to program. So if you feel cognitive friction with this, that's to be expected.
