@@ -31,6 +31,10 @@ If you're familiar with languages like Ruby (`irb`), Python (`python`), or JavaS
 
 To get started, just run `zilf` (or `zilf.exe`) to get into the REPL.
 
+## ZIL Instructions
+
+ZIL instructions, also called operation codes (or just opcodes), are the way that you can communicate with the interpreter.
+
 ## Basic Operation
 
 At the REPL prompt, which is just a greater than sign, enter this:
@@ -40,6 +44,8 @@ At the REPL prompt, which is just a greater than sign, enter this:
 ```
 
 This whole construct is a FORM. The first element of a form indicates the operation to be performed and all other elements are the arguments to that operation. Here the operation is `+` and the arguments to that operation are `1` and `2`. Thus you should see a response of 3 in the REPL itself.
+
+The above is one of the arithmetic instructions. This is actually an `ADD` instruction to the interpreter. This operation appears in ZIL code as a `+` but the compiler changes it to `ADD`.
 
 ### Prefix Notation
 
@@ -109,6 +115,8 @@ You've already seen this when I discussed the prefix notation, but you can use t
 
 The above is showing subtraction, multiplication, division and modulus (remainder). Each of these, just like addition, returns the appropriate type, which is a FIX.
 
+And just like `+` (which gets converted to `ADD`), the above get converted to `SUB`, `MUL`, and `DIV` by the compiler.
+
 ## More Operations
 
 Now let's consider another example that introduces another concept:
@@ -117,7 +125,7 @@ Now let's consider another example that introduces another concept:
 <SET A 10>
 ```
 
-This is another FORM. Here I'm using a `SET` operation. I'm using this to set something called `A` to a FIX value (`10`). Here `A` is a variable. Here's another example:
+This is another FORM. Here I'm using a `SET` operation, which is considered one of the variable instructions. I'm using this to set something called `A` to a FIX value (`10`). Here `A` is a variable. Here's another example:
 
 ```zil
 <SET B 20>
